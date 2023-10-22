@@ -1,10 +1,29 @@
 import random, time
 import tabulate
-
+import sys
+sys.setrecursionlimit(100001)
 
 def qsort(a, pivot_fn):
     ## TO DO
-    pass
+    if len(a) <= 1:
+        return a
+    else:
+        pivot = pivot_fn(a)
+        left_set = []
+        pivot_set = []
+        right_set = []
+        for value in a:
+            if value < pivot:
+                left_set.append(value)
+            elif value == pivot:
+                pivot_set.append(value)
+            else:
+                right_set.append(value)
+
+        left_sorted = qsort(left_set, pivot_fn)
+        right_sorted = qsort(right_set, pivot_fn)
+
+        return left_sorted + pivot_set + right_sorted
     
 def time_search(sort_fn, mylist):
     """
@@ -29,6 +48,12 @@ def time_search(sort_fn, mylist):
     return (time.time() - start) * 1000
     ###
 
+def qsort_fixed_pivot(unsorted_list):
+    qsort(unsorted_list,lambda a: a[0])
+
+def qsort_random_pivot(unsorted_list):
+    qsort(unsorted_list, lambda a: random.choice(a))
+
 def compare_sort(sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]):
     """
     Compare the running time of different sorting algorithms.
@@ -40,15 +65,13 @@ def compare_sort(sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 10
       for each method to run on each value of n
     """
     ### TODO - sorting algorithms for comparison
-    qsort_fixed_pivot = # 
-    qsort_random_pivot = #
-    tim_sort = #
+    #tim_sort = sorted(mylist)
     result = []
     for size in sizes:
         # create list in ascending order
         mylist = list(range(size))
         # shuffles list if needed
-        #random.shuffle(mylist)
+        random.shuffle(mylist)
         result.append([
             len(mylist),
             time_search(qsort_fixed_pivot, mylist),
@@ -65,7 +88,7 @@ def print_results(results):
                             tablefmt="github"))
 
 def test_print():
-    print_results(compare_sort())
+   print_results(compare_sort())
 
 random.seed()
 test_print()
